@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoMo CX Report — Jun–Aug 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ════════════════════════════════
+   TOKENS
+════════════════════════════════ */
+:root {
+  --momo:       #D82D8B;
+  --momo-dark:  #a8206c;
+  --momo-mid:   #e870b3;
+  --momo-light: #FFD6E7;
+  --momo-pale:  #FFF5FA;
+  --ink:        #1C1C1E;
+  --ink2:       #3A3A3C;
+  --ink3:       #636366;
+  --ink4:       #AEAEB2;
+  --line:       #E5E5EA;
+  --surface:    #F2F2F7;
+  --bg:         #FFFFFF;
+  --red:        #FF3B30;
+  --orange:     #FF9500;
+  --green:      #34C759;
+  --blue:       #007AFF;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08);
+  --r:          10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:14px;scroll-behavior:smooth;}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+
+/* ════════════════════════════════
+   TOP NAV
+════════════════════════════════ */
+.topnav{
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:100;
+  box-shadow:var(--shadow-sm);
+}
+.topnav-inner{
+  max-width:1140px;margin:0 auto;padding:0 28px;
+  display:flex;align-items:center;gap:0;
+  height:52px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  margin-right:32px;flex-shrink:0;
+}
+.brand-dot{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--momo);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:13px;
+  box-shadow:0 2px 8px rgba(216,45,139,0.35);
+}
+.brand-name{font-weight:700;font-size:14px;color:var(--ink);}
+.brand-sub{font-size:11px;color:var(--ink3);margin-top:-1px;}
+
+.tabs{display:flex;gap:2px;flex:1;}
+.tab-btn{
+  padding:0 18px;height:52px;
+  background:transparent;border:none;
+  font-family:'Be Vietnam Pro',sans-serif;
+  font-size:13px;font-weight:500;
+  color:var(--ink3);cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+  display:flex;align-items:center;gap:6px;
+  white-space:nowrap;
+}
+.tab-btn:hover{color:var(--ink);}
+.tab-btn.active{color:var(--momo);border-bottom-color:var(--momo);font-weight:700;}
+.tab-btn .tab-icon{font-size:14px;}
+
+.nav-meta{
+  margin-left:auto;flex-shrink:0;
+  font-size:11px;color:var(--ink4);
+  display:flex;align-items:center;gap:6px;
+}
+.nav-period{
+  background:var(--momo-pale);color:var(--momo-dark);
+  padding:3px 9px;border-radius:20px;font-weight:600;font-size:10px;letter-spacing:.5px;
+}
+
+/* ════════════════════════════════
+   TAB PANELS
+════════════════════════════════ */
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ════════════════════════════════
+   SHARED LAYOUT
+════════════════════════════════ */
+.page{max-width:1140px;margin:0 auto;padding:28px 28px 80px;}
+
+/* ════════════════════════════════
+   SECTION HEADER
+════════════════════════════════ */
+.sec{
+  display:flex;align-items:center;gap:10px;
+  margin:36px 0 16px;
+}
+.sec:first-child{margin-top:0;}
+.sec-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--momo);flex-shrink:0;
+}
+.sec-title{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);}
+.sec-line{flex:1;height:1px;background:var(--line);}
+
+/* ════════════════════════════════
+   KPI STRIP
+════════════════════════════════ */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+@media(max-width:720px){.kpi-row{grid-template-columns:repeat(2,1fr);}}
+.kpi{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r);padding:16px;
+  box-shadow:var(--shadow-sm);
+  position:relative;overflow:hidden;
+}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--line);
+}
+.kpi.hi::before{background:var(--momo);}
+.kpi.warn::before{background:var(--red);}
+.kpi-lbl{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;}
+.kpi-val{font-size:clamp(20px,2vw,26px);font-weight:800;line-height:1;color:var(--ink);}
+.kpi.hi .kpi-val{color:var(--momo);}
+.kpi.warn .kpi-val{color:var(--red);}
+.kpi-sub{font-size:10px;color:var(--ink4);margin-top:4px;}
+
+/* ════════════════════════════════
+   CARD / GRID
+════════════════════════════════ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.g13{display:grid;grid-template-columns:1fr 3fr;gap:12px;margin-bottom:12px;}
+@media(max-width:680px){.g2,.g3,.g13{grid-template-columns:1fr;}}
+.gfull{margin-bottom:12px;}
+
+.card{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r);padding:20px;
+  box-shadow:var(--shadow-sm);
+}
+.card-hd{margin-bottom:14px;}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);}
+.card-sub{font-size:11px;color:var(--ink4);margin-top:2px;}
+
+canvas{max-width:100%;display:block;}
+
+/* ════════════════════════════════
+   ── TAB 2: INSIGHTS ──
+════════════════════════════════ */
+
+/* Hero banner */
+.ins-hero{
+  background:var(--momo);
+  border-radius:14px;
+  padding:32px 36px;
+  color:#fff;
+  display:grid;grid-template-columns:1fr auto;
+  gap:24px;align-items:center;
+  margin-bottom:20px;
+}
+@media(max-width:600px){.ins-hero{grid-template-columns:1fr;}}
+.ins-hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.65;margin-bottom:8px;}
+.ins-hero-title{font-size:clamp(18px,2.5vw,26px);font-weight:800;line-height:1.3;margin-bottom:8px;}
+.ins-hero-body{font-size:12px;opacity:.8;line-height:1.75;}
+.ins-hero-body em{font-style:normal;color:var(--momo-light);font-weight:700;}
+.ins-hero-stat{text-align:center;flex-shrink:0;}
+.ins-hero-big{font-size:64px;font-weight:800;line-height:1;color:var(--momo-light);}
+.ins-hero-lbl{font-size:11px;opacity:.7;margin-top:2px;}
+
+/* Insight card */
+.ins-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;}
+.ins-card{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r);
+  display:grid;grid-template-columns:auto 1fr;
+  gap:0;overflow:hidden;
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s;
+}
+.ins-card:hover{box-shadow:var(--shadow-md);}
+.ins-stripe{width:4px;flex-shrink:0;}
+.stripe-red{background:var(--red);}
+.stripe-orange{background:var(--orange);}
+.stripe-green{background:var(--green);}
+.stripe-blue{background:var(--blue);}
+.stripe-pink{background:var(--momo);}
+.ins-body{padding:16px 18px;}
+
+.ins-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+.ins-badge{
+  font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  padding:2px 8px;border-radius:3px;flex-shrink:0;
+}
+.badge-red{background:#FFECEB;color:var(--red);}
+.badge-orange{background:#FFF3E0;color:var(--orange);}
+.badge-green{background:#E8F8ED;color:var(--green);}
+.badge-blue{background:#E8F0FF;color:var(--blue);}
+.badge-pink{background:var(--momo-light);color:var(--momo-dark);}
+
+.ins-title{font-size:13px;font-weight:700;color:var(--ink);line-height:1.4;flex:1;}
+.ins-text{font-size:12px;color:var(--ink2);line-height:1.7;}
+.ins-text strong{color:var(--ink);font-weight:600;}
+
+/* stat pills inside insight */
+.ins-pills{display:flex;gap:10px;margin:10px 0 4px;flex-wrap:wrap;}
+.pill{
+  padding:10px 16px;border-radius:8px;
+  background:var(--surface);border:1px solid var(--line);
+  text-align:center;flex:1;min-width:80px;
+}
+.pill-val{font-size:22px;font-weight:800;line-height:1;margin-bottom:2px;}
+.pill-lbl{font-size:10px;color:var(--ink4);}
+.pv-red{color:var(--red);}
+.pv-orange{color:var(--orange);}
+.pv-green{color:var(--green);}
+.pv-pink{color:var(--momo);}
+
+/* so what */
+.sw{
+  margin-top:10px;
+  padding:10px 12px;
+  background:var(--momo-pale);
+  border-left:3px solid var(--momo);
+  border-radius:0 6px 6px 0;
+  font-size:11px;color:var(--ink2);line-height:1.65;
+}
+.sw b{color:var(--momo-dark);font-weight:700;}
+
+/* ════════════════════════════════
+   ACTION TABLE
+════════════════════════════════ */
+.action-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:12px;}
+.action-table{width:100%;border-collapse:collapse;font-size:12px;}
+.action-table th{
+  font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--ink3);padding:10px 14px;text-align:left;
+  background:var(--surface);border-bottom:1px solid var(--line);
+}
+.action-table td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;}
+.action-table tr:last-child td{border-bottom:none;}
+.action-table tr:hover td{background:var(--momo-pale);}
+.pbadge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+.p1{background:#FFECEB;color:var(--red);}
+.p2{background:#FFF3E0;color:var(--orange);}
+.p3{background:#E8F0FF;color:var(--blue);}
+.a-name{font-weight:600;color:var(--ink);margin-bottom:2px;}
+.a-why{font-size:11px;color:var(--ink3);}
+.owner-tag{display:inline-block;background:var(--surface);border:1px solid var(--line);font-size:10px;padding:2px 7px;border-radius:4px;color:var(--ink3);font-weight:500;}
+.tl{font-size:11px;font-weight:600;color:var(--ink2);white-space:nowrap;}
+
+/* callout footer */
+.fin-callout{
+  background:var(--momo);border-radius:14px;
+  padding:28px 36px;color:#fff;
+  display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;
+  margin-top:8px;
+}
+@media(max-width:600px){.fin-callout{grid-template-columns:1fr;}}
+.fc-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.65;margin-bottom:6px;font-weight:700;}
+.fc-title{font-size:clamp(15px,2vw,19px);font-weight:700;line-height:1.4;margin-bottom:8px;}
+.fc-body{font-size:12px;opacity:.82;line-height:1.75;}
+.fc-body em{font-style:normal;color:var(--momo-light);font-weight:600;}
+.fc-num{text-align:center;}
+.fc-big{font-size:52px;font-weight:800;line-height:1;color:var(--momo-light);}
+.fc-sub{font-size:11px;opacity:.7;margin-top:2px;}
+
+/* page footer */
+.pgfooter{
+  margin-top:48px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:11px;color:var(--ink4);flex-wrap:wrap;gap:6px;
+}
+.pgfooter .logo{font-weight:800;color:var(--momo);font-size:13px;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════
+     TOP NAVIGATION
+══════════════════════════ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">
+      <div class="brand-dot">Mo</div>
+      <div>
+        <div class="brand-name">MoMo CX Report</div>
+        <div class="brand-sub">Jun – Aug 2025</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dash',this)">
+        <span class="tab-icon">📊</span> Dashboard
+      </button>
+      <button class="tab-btn" onclick="switchTab('ins',this)">
+        <span class="tab-icon">💡</span> Insights &amp; So What
+      </button>
+    </div>
+
+    <div class="nav-meta">
+      <span class="nav-period">01/06 – 03/08/2025</span>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════
+     TAB 1: DASHBOARD
+══════════════════════════ -->
+<div id="tab-dash" class="tab-panel active">
+<div class="page">
+
+  <!-- KPI -->
+  <div class="kpi-row">
+    <div class="kpi hi">
+      <div class="kpi-lbl">Tổng tickets</div>
+      <div class="kpi-val">179,460</div>
+      <div class="kpi-sub">64 ngày · 60,675 records</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">TB / ngày</div>
+      <div class="kpi-val">2,804</div>
+      <div class="kpi-sub">Peak: 3,455 (31/07)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Agents</div>
+      <div class="kpi-val">81</div>
+      <div class="kpi-sub">79 có dữ liệu giờ làm</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Loại vấn đề</div>
+      <div class="kpi-val">171</div>
+      <div class="kpi-sub">Level1 categories</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-lbl">Feedback tiêu cực</div>
+      <div class="kpi-val">48.5%</div>
+      <div class="kpi-sub">trong 999 phản hồi</div>
+    </div>
+  </div>
+
+  <!-- TREND -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Xu hướng tickets</div><div class="sec-line"></div></div>
+
+  <div class="gfull card">
+    <div class="card-hd">
+      <div class="card-title">Lượng tickets hàng ngày</div>
+      <div class="card-sub">Đường liền = trung bình động 7 ngày · xu hướng tăng rõ từ tháng 7</div>
+    </div>
+    <canvas id="dailyChart" height="72"></canvas>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd"><div class="card-title">Tickets theo tuần</div><div class="card-sub">Tổng mỗi tuần ISO — tăng liên tục W23→W30</div></div>
+      <canvas id="weeklyChart" height="190"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-title">Trung bình theo ngày trong tuần</div><div class="card-sub">Thứ 2–3 cao hơn cuối tuần ~19%</div></div>
+      <canvas id="dowChart" height="190"></canvas>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Phân loại vấn đề</div><div class="sec-line"></div></div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd"><div class="card-title">Top 10 loại vấn đề</div><div class="card-sub">Tổng tickets theo Level1</div></div>
+      <canvas id="catChart" height="270"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-title">Tăng trưởng tháng 6 → 7</div><div class="card-sub">% thay đổi theo category</div></div>
+      <canvas id="growthCatChart" height="270"></canvas>
+    </div>
+  </div>
+
+  <!-- CUSTOMER VOICE -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Giọng nói khách hàng</div><div class="sec-line"></div></div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd"><div class="card-title">Top vấn đề trong phản hồi KH</div><div class="card-sub">Từ khóa phổ biến nhất — 999 feedbacks</div></div>
+      <canvas id="feedbackChart" height="210"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-title">Phân bổ sentiment</div><div class="card-sub">Sau khi ticket được đóng</div></div>
+      <canvas id="sentimentChart" height="210"></canvas>
+    </div>
+  </div>
+
+  <!-- WORKFORCE -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Hiệu suất nhân lực</div><div class="sec-line"></div></div>
+
+  <div class="gfull card">
+    <div class="card-hd"><div class="card-title">Top 12 agents — Tổng tickets xử lý</div><div class="card-sub">Top 20% agents (16 người) xử lý 37.7% tổng tickets</div></div>
+    <canvas id="agentTicketChart" height="60"></canvas>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd"><div class="card-title">Top 10 agents — Giờ làm việc</div><div class="card-sub">Tổng giờ làm đã trừ break time</div></div>
+      <canvas id="agentHoursChart" height="250"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-title">Hiệu suất: Tickets / Giờ làm</div><div class="card-sub">Đường cam = avg hệ thống (11.8/h)</div></div>
+      <canvas id="effChart" height="250"></canvas>
+    </div>
+  </div>
+
+  <div class="pgfooter">
+    <span class="logo">MoMo</span>
+    <span>Customer Experience · 179,460 tickets · 81 agents · Jun–Aug 2025</span>
+    <span>CX / DA Case Study</span>
+  </div>
+</div>
+</div><!-- /tab-dash -->
+
+
+<!-- ══════════════════════════
+     TAB 2: INSIGHTS
+══════════════════════════ -->
+<div id="tab-ins" class="tab-panel">
+<div class="page">
+
+  <!-- Hero -->
+  <div class="ins-hero">
+    <div>
+      <div class="ins-hero-eyebrow">Key Findings · Jun–Aug 2025</div>
+      <div class="ins-hero-title">CX đang tăng trưởng về sản lượng<br>— nhưng chất lượng chưa theo kịp</div>
+      <div class="ins-hero-body">
+        <em>48.5% feedback tiêu cực</em> và <em>28.9% ticket đóng mà chưa giải quyết</em> cho thấy hệ thống đang chase KPI sản lượng, chưa theo KPI chất lượng. Dưới đây là 6 findings chính và khuyến nghị hành động cụ thể.
+      </div>
+    </div>
+    <div class="ins-hero-stat">
+      <div class="ins-hero-big">6</div>
+      <div class="ins-hero-lbl">key insights<br>+ action plans</div>
+    </div>
+  </div>
+
+  <!-- ── INSIGHT 1 ── -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Xu hướng nhu cầu</div><div class="sec-line"></div></div>
+
+  <div class="ins-list">
+    <div class="ins-card">
+      <div class="ins-stripe stripe-red"></div>
+      <div class="ins-body">
+        <div class="ins-top">
+          <div class="ins-title">Tickets tăng đều 3–5%/tuần trong tháng 7 — đây là xu hướng hệ thống, không phải spike ngẫu nhiên</div>
+          <span class="ins-badge badge-red">Urgent Signal</span>
+        </div>
+        <div class="ins-text">
+          Từ W25→W30 lượng tickets tăng liên tục: +10.1% → +1.9% → +2.7% → +3.2% → +4.2% → <strong>+4.3%</strong>. Đỉnh 31/07 đạt <strong>3,455 tickets/ngày</strong> — cao hơn 78% so với ngày đầu kỳ. Với 81 agents hiện tại, tải trung bình đang là 62.8 tickets/agent/ngày.
+        </div>
+        <div class="sw"><b>→ So What?</b> Nếu giữ đà này, cuối Q3 tải/agent vượt <b>77+ tickets/ngày</b>. Cần lập kế hoạch headcount ngay bây giờ — không phải khi đã quá tải. Đặc biệt lưu ý: Thứ 2–3 cao hơn cuối tuần ~19%, cần bố trí nhân lực không đều theo ngày.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- chart mini in insight -->
+  <div class="card gfull" style="margin-bottom:12px">
+    <div class="card-hd"><div class="card-title">Tổng tickets theo tuần &amp; tăng trưởng WoW</div></div>
+    <canvas id="insWeeklyChart" height="70"></canvas>
+  </div>
+
+  <!-- ── INSIGHT 2 ── -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Điểm mù phân loại vấn đề</div><div class="sec-line"></div></div>
+
+  <div class="ins-list">
+    <div class="ins-card">
+      <div class="ins-stripe stripe-red"></div>
+      <div class="ins-body">
+        <div class="ins-top">
+          <div class="ins-title">"Chưa xác định được vấn đề" chiếm 26.7% tổng tickets — một điểm mù hệ thống nghiêm trọng</div>
+          <span class="ins-badge badge-red">Critical</span>
+        </div>
+        <div class="ins-text">
+          47,910 tickets bị gán nhãn mơ hồ — nhiều hơn toàn bộ tickets vay tiêu dùng cộng lại. Con số này còn <strong>tăng 10.2%</strong> từ tháng 6 sang tháng 7. Không thể phân tích root cause, không thể đo cải thiện, không thể phân công agent chuyên biệt.
+        </div>
+        <div class="sw"><b>→ So What?</b> Không phải vấn đề training agent — đây là <b>lỗi thiết kế hệ thống phân loại</b>. Cần: (1) bắt buộc chọn category trước khi submit, (2) review taxonomy Level1, (3) thử auto-tag NLP từ nội dung KH nhập. Làm đúng sẽ ngay lập tức cải thiện toàn bộ khả năng phân tích.</div>
+      </div>
+    </div>
+
+    <div class="ins-card">
+      <div class="ins-stripe stripe-red"></div>
+      <div class="ins-body">
+        <div class="ins-top">
+          <div class="ins-title">Giao dịch quốc tế bùng nổ +43.6% trong 1 tháng — tín hiệu cần điều tra ngay</div>
+          <span class="ins-badge badge-orange">Emerging Risk</span>
+        </div>
+        <div class="ins-text">
+          Category "Quốc tế": 5,617 (T6) → <strong>8,065 (T7)</strong> — tốc độ tăng cao nhất trong tất cả categories, gấp 4 lần mức tăng trung bình. Tương tự, "Thu hộ vay tiêu dùng" tăng <strong>+66%</strong> (2,070 → 3,436), trong khi "Chi hộ vay" lại giảm nhẹ -4.4%.
+        </div>
+        <div class="sw"><b>→ So What?</b> Spike quốc tế +43.6% trong 1 tháng thường là dấu hiệu của <b>product bug hoặc UX regression</b>. Cần cross-check với team engineering xem có release nào trong tháng 7 ảnh hưởng cross-border flow. Nếu là lỗi — cần hotfix ngay. "Thu hộ vay" tăng đột biến cũng cần phân tích: KH đang hỏi cách trả hay đang khiếu nại bị thu sai?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INSIGHT 3 ── -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Giọng nói khách hàng</div><div class="sec-line"></div></div>
+
+  <div class="ins-list">
+    <div class="ins-card">
+      <div class="ins-stripe stripe-red"></div>
+      <div class="ins-body">
+        <div class="ins-top">
+          <div class="ins-title">Gần 1 trong 2 KH phản hồi tiêu cực sau khi ticket đóng — và 29% nói vấn đề chưa được xử lý</div>
+          <span class="ins-badge badge-red">CX Health Alert</span>
+        </div>
+        <div class="ins-pills">
+          <div class="pill"><div class="pill-val pv-red">48.5%</div><div class="pill-lbl">Tiêu cực</div></div>
+          <div class="pill"><div class="pill-val pv-orange">28.9%</div><div class="pill-lbl">Chưa giải quyết</div></div>
+          <div class="pill"><div class="pill-val pv-green">16.4%</div><div class="pill-lbl">Tích cực</div></div>
+        </div>
+        <div class="ins-text">Vấn đề phổ biến nhất: <strong>hoàn tiền</strong> (169 đề cập), <strong>tài khoản</strong> (121), <strong>chuyển khoản</strong> (87). Nhiều khách hàng re-open ticket vì lần đầu chưa được giải quyết.</div>
+        <div class="sw"><b>→ So What?</b> Tỷ lệ 28.9% ticket đóng nhưng chưa giải quyết là nguy hiểm — đang <b>inflate số "closed tickets" giả tạo</b>. Cần audit ngay: agent đóng ticket vì đã xử lý xong, hay vì hết SLA? Đây là vấn đề ảnh hưởng trực tiếp đến tính chính xác của mọi KPI hiện tại.</div>
+      </div>
+    </div>
+
+    <div class="ins-card">
+      <div class="ins-stripe stripe-orange"></div>
+      <div class="ins-body">
+        <div class="ins-top">
+          <div class="ins-title">Hoàn tiền là nỗi đau số 1 — và mỗi case chậm đang nhân lên thành 1–3 tickets follow-up</div>
+          <span class="ins-badge badge-orange">Top Issue</span>
+        </div>
+        <div class="ins-text">
+          169 lần đề cập hoàn tiền trong 999 feedbacks (~17%). Pattern lặp đi lặp lại: giao dịch thất bại → tiền bị trừ → không được hoàn đúng hạn → KH gửi ticket → agent xử lý chậm → KH re-open. Một chuỗi domino có thể phá vỡ bằng một điểm can thiệp duy nhất.
+        </div>
+        <div class="sw"><b>→ So What?</b> Triển khai <b>auto-refund ≤24h</b> cho failed transactions là hành động có ROI cao nhất hiện tại. Ước tính: giải quyết gốc rễ hoàn tiền có thể giảm 15–20% tổng ticket volume từ KH đã từng gặp lỗi giao dịch.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INSIGHT 4 ── -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Nhân lực &amp; hiệu suất</div><div class="sec-line"></div></div>
+
+  <div class="ins-list">
+    <div class="ins-card">
+      <div class="ins-stripe stripe-orange"></div>
+      <div class="ins-body">
+        <div class="ins-top">
+          <div class="ins-title">29 lượt agent làm trên 48h/tuần — burnout đang hiện hữu, đặc biệt nhóm top performers</div>
+          <span class="ins-badge badge-orange">Workforce Risk</span>
+        </div>
+        <div class="ins-text">
+          bpomb33 đạt đỉnh <strong>67.5h trong tuần W25</strong> — tương đương 9.6h/ngày, 7 ngày liên tiếp. Nghịch lý: chính những agents xuất sắc nhất (bpomb33, bpomb15) lại đang bị khai thác quá mức. Nghỉ việc từ nhóm này sẽ tạo ra lỗ hổng khó bù đắp.
+        </div>
+        <div class="sw"><b>→ So What?</b> Đặt <b>hard cap 48h/tuần</b> và cảnh báo tự động trong hệ thống WFM. Overwork không tăng năng suất dài hạn — chỉ tăng nguy cơ nghỉ việc và giảm chất lượng xử lý ticket.</div>
+      </div>
+    </div>
+
+    <div class="ins-card">
+      <div class="ins-stripe stripe-blue"></div>
+      <div class="ins-body">
+        <div class="ins-top">
+          <div class="ins-title">Năng suất chênh lệch 3× giữa top và bottom — cải thiện bottom quartile = +15% capacity miễn phí</div>
+          <span class="ins-badge badge-blue">Opportunity</span>
+        </div>
+        <div class="ins-pills">
+          <div class="pill"><div class="pill-val pv-green">19.6</div><div class="pill-lbl">tickets/h (top)</div></div>
+          <div class="pill"><div class="pill-val" style="color:var(--ink3)">11.8</div><div class="pill-lbl">tickets/h (avg)</div></div>
+          <div class="pill"><div class="pill-val pv-red">6.5</div><div class="pill-lbl">tickets/h (bottom)</div></div>
+        </div>
+        <div class="ins-text">Bottom quartile (&lt;9.9/h) đa số mang prefix "bpovm" — có thể là nhóm part-time, offshore, hoặc mới onboard. Std dev = 3.02 cho thấy khoảng cách lớn, có thể cải thiện được.</div>
+        <div class="sw"><b>→ So What?</b> Xác định nguyên nhân nhóm bpovm thấp hơn: <b>training thiếu, loại ticket khó hơn, tool access kém, hay ca làm việc không hiệu quả?</b> Mỗi nguyên nhân đòi giải pháp khác nhau. Nhưng kết quả tiềm năng là +15% throughput mà không cần tuyển thêm người.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION TABLE -->
+  <div class="sec"><div class="sec-dot"></div><div class="sec-title">Khuyến nghị hành động</div><div class="sec-line"></div></div>
+
+  <div class="action-wrap">
+    <table class="action-table">
+      <thead>
+        <tr>
+          <th style="width:95px">Mức độ</th>
+          <th>Hành động</th>
+          <th style="width:130px">Bộ phận</th>
+          <th style="width:95px">Timeline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pbadge p1">🔴 Khẩn cấp</span></td>
+          <td><div class="a-name">Investigate đột biến +43.6% tickets "Quốc tế" tháng 7</div><div class="a-why">Có thể là product bug — cần xác nhận ngay với engineering</div></td>
+          <td><span class="owner-tag">Product + CX Lead</span></td>
+          <td class="tl">Ngay lập tức</td>
+        </tr>
+        <tr>
+          <td><span class="pbadge p1">🔴 Khẩn cấp</span></td>
+          <td><div class="a-name">Audit quy trình đóng ticket: phân biệt "resolved" vs "closed by SLA"</div><div class="a-why">28.9% KH báo chưa giải quyết → KPI đang bị inflate</div></td>
+          <td><span class="owner-tag">CX Ops</span></td>
+          <td class="tl">Tuần 1–2</td>
+        </tr>
+        <tr>
+          <td><span class="pbadge p1">🔴 Khẩn cấp</span></td>
+          <td><div class="a-name">Triển khai auto-refund ≤24h cho failed transactions</div><div class="a-why">Hoàn tiền = vấn đề #1 (169 mentions); mỗi case chậm sinh 1–3 tickets follow-up</div></td>
+          <td><span class="owner-tag">Product + Engineering</span></td>
+          <td class="tl">Sprint tới</td>
+        </tr>
+        <tr>
+          <td><span class="pbadge p2">🟠 Quan trọng</span></td>
+          <td><div class="a-name">Cải thiện hệ thống phân loại Level1 — bắt buộc chọn category</div><div class="a-why">26.7% tickets = "Chưa xác định" → mù phân tích root cause</div></td>
+          <td><span class="owner-tag">CX Ops + Data</span></td>
+          <td class="tl">4–6 tuần</td>
+        </tr>
+        <tr>
+          <td><span class="pbadge p2">🟠 Quan trọng</span></td>
+          <td><div class="a-name">Lập kế hoạch headcount Q3 — tải dự báo tăng 3–5%/tuần</div><div class="a-why">Cuối Q3 tải/agent tăng từ 62.8 → 77+ tickets/ngày nếu không bổ sung</div></td>
+          <td><span class="owner-tag">CX Manager + HR</span></td>
+          <td class="tl">Tháng tới</td>
+        </tr>
+        <tr>
+          <td><span class="pbadge p2">🟠 Quan trọng</span></td>
+          <td><div class="a-name">Đặt hard cap 48h/tuần + cảnh báo tự động trong WFM</div><div class="a-why">29 lượt vi phạm trong kỳ; bpomb33 đạt 67.5h/tuần — burnout risk</div></td>
+          <td><span class="owner-tag">CX Ops + WFM</span></td>
+          <td class="tl">2–3 tuần</td>
+        </tr>
+        <tr>
+          <td><span class="pbadge p3">🔵 Dài hạn</span></td>
+          <td><div class="a-name">Phân tích nhóm bpovm — tìm nguyên nhân năng suất thấp hơn 30%</div><div class="a-why">Cải thiện bottom quartile lên avg = +15% capacity không cần tuyển thêm</div></td>
+          <td><span class="owner-tag">CX Training</span></td>
+          <td class="tl">6–8 tuần</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FINAL CALLOUT -->
+  <div class="fin-callout">
+    <div>
+      <div class="fc-label">Bottom Line</div>
+      <div class="fc-title">Ba hành động trong 2–4 tuần tới sẽ tạo nền tảng để scale CX bền vững</div>
+      <div class="fc-body">
+        Investigate spike quốc tế · Audit quy trình đóng ticket · Triển khai auto-refund. Làm tốt ba điều này sẽ: <em>làm sạch KPI hiện tại</em>, <em>giảm tải tức thì</em>, và <em>xây dựng niềm tin khách hàng</em> — trước khi scale thêm nhân lực.
+      </div>
+    </div>
+    <div class="fc-num">
+      <div class="fc-big">3</div>
+      <div class="fc-sub">priority<br>actions</div>
+    </div>
+  </div>
+
+  <div class="pgfooter">
+    <span class="logo">MoMo</span>
+    <span>Customer Experience · Insights &amp; So What</span>
+    <span>179,460 tickets · 81 agents · 999 feedbacks</span>
+  </div>
+</div>
+</div><!-- /tab-ins -->
+
+
+<script>
+/* ── helpers ── */
+const M='#D82D8B', ML='rgba(216,45,139,0.15)', MB='rgba(216,45,139,0.65)';
+const gc='rgba(0,0,0,0.05)';
+Chart.defaults.font.family="'Be Vietnam Pro',sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color='#636366';
+const tt={backgroundColor:'#1C1C1E',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:10,cornerRadius:6,borderWidth:0};
+
+function ma(arr,n=7){return arr.map((_,i)=>i<n-1?null:Math.round(arr.slice(i-n+1,i+1).reduce((a,b)=>a+b,0)/n));}
+
+/* DATA */
+const DAILY=[1940,2605,3005,2691,2526,2519,2315,2337,2657,2782,2633,2380,2359,2236,2264,2732,2830,2915,2621,2819,2687,2451,3056,2987,2813,2766,2760,2542,2498,3084,2943,2843,2659,2961,2728,2737,3253,3178,3133,2711,2815,2720,2775,3418,3380,3085,2893,3096,2876,2709,3316,3425,3376,3083,3129,2838,3207,3295,3272,3261,3455,2992,2978];
+const DLBLS=DAILY.map((_,i)=>{const d=new Date('2025-06-01');d.setDate(d.getDate()+i);return`${d.getDate()}/${d.getMonth()+1}`;});
+const WDATA=[17998,17311,19055,19422,19955,20585,21457,22374,19363];
+const WLBLS=['W23','W24','W25','W26','W27','W28','W29','W30','W31'];
+const WCOLORS=['#e8d5e2','#e8d5e2',MB,'rgba(216,45,139,.55)','rgba(216,45,139,.65)','rgba(216,45,139,.75)',MB,M,'rgba(216,45,139,.5)'];
+
+/* CHARTS — DASHBOARD */
+// 1 daily
+new Chart('dailyChart',{type:'line',data:{labels:DLBLS,datasets:[
+  {label:'Tickets/ngày',data:DAILY,borderColor:'rgba(216,45,139,.3)',backgroundColor:ML,borderWidth:1,pointRadius:0,fill:true,tension:.4},
+  {label:'TB 7 ngày',data:ma(DAILY),borderColor:M,backgroundColor:'transparent',borderWidth:2.5,pointRadius:0,fill:false,tension:.4,spanGaps:true}
+]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{boxWidth:14,padding:14}},tooltip:tt},scales:{x:{grid:{color:gc},ticks:{maxTicksLimit:16}},y:{grid:{color:gc},min:1500}}}});
+
+// 2 weekly
+new Chart('weeklyChart',{type:'bar',data:{labels:WLBLS,datasets:[{label:'Tickets',data:WDATA,backgroundColor:WCOLORS,borderRadius:5,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:tt},scales:{x:{grid:{display:false}},y:{grid:{color:gc},ticks:{callback:v=>(v/1000).toFixed(0)+'k'},min:15000}}}});
+
+// 3 dow
+new Chart('dowChart',{type:'bar',data:{labels:['T2','T3','T4','T5','T6','T7','CN'],datasets:[{label:'Avg tickets',data:[2822,2892,2869,2921,2778,2714,2619],backgroundColor:[M,M,'rgba(216,45,139,.7)','rgba(216,45,139,.7)','rgba(216,45,139,.5)','rgba(216,45,139,.35)','rgba(216,45,139,.35)'],borderRadius:5,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:tt},scales:{x:{grid:{display:false}},y:{grid:{color:gc},min:2400}}}});
+
+// 4 cat
+new Chart('catChart',{type:'bar',data:{labels:['Chưa xác định','Chi hộ vay TD','Quốc tế','Hỗ trợ TK','Thu hộ vay TD','W2B-CTT NH','Nạp tiền','HD sử dụng app','W2B-AS-CTT NH','Đầu tư tích lũy'],datasets:[{label:'Tickets',data:[47910,28785,14150,9764,5709,5306,4867,4565,3423,2759],backgroundColor:[M,MB,'rgba(216,45,139,.6)','rgba(216,45,139,.5)','rgba(216,45,139,.42)','rgba(216,45,139,.36)','rgba(216,45,139,.30)','rgba(216,45,139,.25)','rgba(216,45,139,.20)','rgba(216,45,139,.15)'],borderRadius:4}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:tt},scales:{x:{grid:{color:gc},ticks:{callback:v=>(v/1000).toFixed(0)+'k'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+// 5 growth cat
+new Chart('growthCatChart',{type:'bar',data:{labels:['Thu hộ vay TD','Quốc tế','Hỗ trợ TK','Chưa xác định','W2B-CTT NH','Chi hộ vay TD'],datasets:[{label:'T6→T7 (%)',data:[66.0,43.6,33.1,10.2,0.9,-4.4],backgroundColor:[M,MB,'rgba(216,45,139,.6)','rgba(216,45,139,.35)','rgba(216,45,139,.2)','#E5E5EA'],borderRadius:4}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:ctx=>` ${ctx.parsed.x>0?'+':''}${ctx.parsed.x}%`}}},scales:{x:{grid:{color:gc},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+// 6 feedback
+new Chart('feedbackChart',{type:'bar',data:{labels:['Hoàn tiền','Tài khoản','Chuyển khoản','GD thất bại','Mã thẻ','Nạp tiền','Nạp game'],datasets:[{label:'Đề cập',data:[169,121,87,41,30,15,6],backgroundColor:[M,MB,'rgba(216,45,139,.55)','rgba(216,45,139,.42)','rgba(216,45,139,.30)','rgba(216,45,139,.20)','rgba(216,45,139,.14)'],borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:tt},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:gc}}}}});
+
+// 7 sentiment
+new Chart('sentimentChart',{type:'doughnut',data:{labels:['Tiêu cực (48.5%)','Trung tính (35.1%)','Tích cực (16.4%)'],datasets:[{data:[485,350,164],backgroundColor:['#FF3B30','#E5E5EA',M],borderColor:'#fff',borderWidth:3,hoverOffset:6}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:12,font:{size:11}}},tooltip:tt},cutout:'62%'}});
+
+// 8 agent tickets
+new Chart('agentTicketChart',{type:'bar',data:{labels:['bpomb33','bpomb15','bpomb45','bpomb09','bpovm16','bpomb32','bpomb35','bpomb18','bpomb42','bpomb43','bpomb41','bpomb13'],datasets:[{label:'Tickets',data:[5149,4550,4532,4514,4339,4296,4282,4275,4214,4140,4087,4020],backgroundColor:(ctx)=>ctx.dataIndex===0?M:MB,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:tt},scales:{x:{grid:{display:false},ticks:{font:{size:10,family:'monospace'}}},y:{grid:{color:gc},min:3500}}}});
+
+// 9 agent hours
+new Chart('agentHoursChart',{type:'bar',data:{labels:['bpomb33','bpomb15','bpomb09','bpomb45','bpomb35','bpomb41','bpomb18','bpomb43','bpovm65','bpomb44'],datasets:[{label:'Giờ',data:[470.7,469.0,427.5,413.1,406.7,396.8,395.5,382.0,373.2,367.1],backgroundColor:(ctx)=>ctx.dataIndex===0?M:MB,borderRadius:4}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:ctx=>` ${ctx.parsed.x.toFixed(1)}h`}}},scales:{x:{grid:{color:gc},min:280,ticks:{callback:v=>v+'h'}},y:{grid:{display:false},ticks:{font:{size:10,family:'monospace'}}}}}});
+
+// 10 efficiency
+new Chart('effChart',{type:'bar',data:{labels:['bpomb46','bpovm48','bpovm43','bpomb16','bpovm45','bpovm27','bpovm16','bpomb31','bpomb30','bpomb42'],datasets:[
+  {label:'Tickets/h',data:[19.58,18.16,18.01,17.7,16.95,15.79,15.75,15.0,14.85,14.26],backgroundColor:MB,borderRadius:4},
+  {label:'Avg (11.8)',data:Array(10).fill(11.8),type:'line',borderColor:'#FF9500',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false}
+]},options:{indexAxis:'y',responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:14,padding:12}},tooltip:{...tt,callbacks:{label:ctx=>ctx.dataset.type==='line'?' Avg: 11.8/h':` ${ctx.parsed.x}/h`}}},scales:{x:{grid:{color:gc},ticks:{callback:v=>v+'/h'}},y:{grid:{display:false},ticks:{font:{size:10,family:'monospace'}}}}}});
+
+/* CHARTS — INSIGHTS TAB */
+// weekly combo (bar + line WoW)
+new Chart('insWeeklyChart',{type:'bar',data:{labels:WLBLS,datasets:[
+  {type:'bar',label:'Tickets',data:WDATA,backgroundColor:WCOLORS,borderRadius:5,yAxisID:'y'},
+  {type:'line',label:'WoW %',data:[null,-3.8,10.1,1.9,2.7,3.2,4.2,4.3,null],borderColor:'#FF9500',backgroundColor:'transparent',borderWidth:2,pointBackgroundColor:'#FF9500',pointRadius:4,yAxisID:'y2',tension:.4,spanGaps:false}
+]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{boxWidth:14,padding:14}},tooltip:tt},scales:{y:{grid:{color:gc},ticks:{callback:v=>(v/1000).toFixed(0)+'k'},min:15000},y2:{position:'right',grid:{display:false},ticks:{callback:v=>v+'%',color:'#FF9500'}}}}});
+
+/* TAB SWITCH */
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
